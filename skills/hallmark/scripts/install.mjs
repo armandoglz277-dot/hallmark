@@ -107,7 +107,7 @@ try {
 }
 const gate = (label, argv) => {
   try { execFileSync(process.execPath, argv, { stdio: "pipe" }); return true; }
-  catch (e) { console.log(`\n${label} failed:\n${String(e.stdout || "").trim()}`); return false; }
+  catch (e) { console.log(`\n${label} failed:\n${[e.stdout, e.stderr].map((s) => String(s || "").trim()).filter(Boolean).join("\n")}`); return false; }
 };
 const themeFiles = fs.readdirSync(path.join(SKILL_ROOT, "references", "themes")).filter((f) => f.endsWith(".md")).map((f) => path.join(SKILL_ROOT, "references", "themes", f));
 const clean = gate("refcheck", [path.join(HERE, "refcheck.mjs"), "--errors"]) & gate("theme validate", [path.join(HERE, "theme.mjs"), "validate", ...themeFiles]);

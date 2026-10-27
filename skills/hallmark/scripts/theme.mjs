@@ -69,6 +69,10 @@ function buildIndex() {
     if (slugs.has(e.slug)) throw new Error(`duplicate slug ${e.slug}`);
     slugs.add(e.slug);
   }
+  // leave the file alone when no theme changed, so an install does not dirty the checkout with a new date
+  let old = null;
+  try { old = JSON.parse(readFileSync(INDEX, 'utf8')); } catch {}
+  if (old && JSON.stringify(old.themes) === JSON.stringify(entries)) return entries;
   writeFileSync(INDEX, JSON.stringify({ built: new Date().toISOString().slice(0, 10), themes: entries }, null, 1) + '\n');
   return entries;
 }
